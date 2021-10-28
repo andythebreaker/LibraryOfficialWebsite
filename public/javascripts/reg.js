@@ -96,9 +96,31 @@ function login_button_click() {
                 }
                 var re = /\/users\/login/gi;
                 var newstr = window.location.href.replace(re, objects_returned_by_the_server);
-                try { // statements to try
+
+                var whether_the_account_password_is_wrong = true;
+                //101->
+                const regex = /\n|\r|<|\t/gm;
+                const str = newstr;
+                let m;
+
+                while ((m = regex.exec(str)) !== null) {
+                    // This is necessary to avoid infinite loops with zero-width matches
+                    if (m.index === regex.lastIndex) {
+                        regex.lastIndex++;
+                    }
+
+                    // The result can be accessed through the `m`-variable.
+                    m.forEach((match, groupIndex) => {
+                        //alert(`Found match, group ${groupIndex}: ${match}`);
+                        whether_the_account_password_is_wrong = false;
+                    });
+                }
+                //<-101
+
+                if (whether_the_account_password_is_wrong)/*try*/ { // statements to try
+
                     window.location.href = newstr;
-                } catch (e) {
+                } /*catch (e)*/else {
                     //console.log(e);
                     $("#waiting_block").css('display', "none")
                     document.getElementById("error_msg_gui_word_part_color_1").innerText = "red";
