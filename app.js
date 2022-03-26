@@ -14,6 +14,14 @@ const SocketServer = require('ws').Server;
 const robots = require('express-robots-txt');
 var minifyHTML = require('express-minify-html-2');
 
+/********************* */
+var Grid = require('gridfs-stream'),
+    upload = require('jquery-file-upload-gridfs-middleware');
+    var    Db = require('mongodb').Db;
+    var   Server = require('mongodb').Server;
+    var   MongoClient = require('mongodb').MongoClient;
+    /////////////////////////////////////////////////
+
 //add new module
 var flash = require('connect-flash');
 var mongo = require('mongodb');
@@ -80,6 +88,37 @@ app.use('/users', usersRouter);
 app.use('/main', mainRouter);
 app.use('/tool', toolRouter);
 app.use('/upload', uploadRouter);
+
+/**********************copy from models users.js************************** */
+const mongoDBuserName = "linjsing";
+const mongoDBpsw = process.env.linjsing;
+const mongoDBdataBaseName = "maindb";
+const uri = process.env.DBurl || `mongodb+srv://${mongoDBuserName}:${mongoDBpsw}@cluster0.iupxg.mongodb.net/${mongoDBdataBaseName}?retryWrites=true&w=majority`;
+/**********************copy from models users.js************************** */var b = uri.split('/');
+var c = ''; b.forEach((o, i) => { if (i !== b.length - 1) { c += o; } if (i === 1) { c += '//'; } }); console.log(c);
+var gfs =null;
+MongoClient.connect( uri, function (err, client) {
+    console.log(err);
+    // Select the database by name
+    const db = client.db(c[c.length - 1]);console.log("1");
+ gfs = Grid(db, mongo);
+    console.log("2");
+
+});
+upload.configure({
+  uploadDir: '/public/uploads',
+  mongoGfs: gfs,
+  imageVersions: {
+      thumbnail: {
+          width: 80,
+          height: 80
+      }
+  }
+});
+app.use('/upload', 
+      upload.fileHandler());
+      var bodyParser = require('body-parser')
+      app.use(bodyParser);
 
 app.use(robots({
   UserAgent: '*',

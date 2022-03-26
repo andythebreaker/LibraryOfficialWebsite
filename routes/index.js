@@ -524,7 +524,13 @@ router.get('/sitemap.xml', function (req, res) {
     console.error(e)
     res.status(500).end()
   }
-})
+});
+
+router.get('/mp4up', function (req, res) {
+  res.render('vid_up', {
+   
+  });
+});
 
 module.exports = router;
 
