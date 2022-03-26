@@ -294,6 +294,7 @@ block content
                   if emt==="tab0"
                     each eo, index in e3
                       tr(data-dbno=eo.sn2)
+                                              //如果編輯要重傳檔案，就直接重新增一份，把原本的刪掉，不然要重hash，不太合理
                         th(scope='row')
                           b= index+1
                         td
